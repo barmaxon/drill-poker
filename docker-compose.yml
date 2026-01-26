@@ -1,0 +1,84 @@
+services:
+  php:
+    build:
+      context: ./docker/php
+      args:
+        USER_ID: ${USER_ID:-1000}
+        GROUP_ID: ${GROUP_ID:-1000}
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+      - redis
+    networks:
+      - poker-network
+
+  nginx:
+    build:
+      context: ./docker/nginx
+    ports:
+      - "8090:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - php
+    networks:
+      - poker-network
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: poker_study
+      MYSQL_USER: poker
+      MYSQL_PASSWORD: secret
+    volumes:
+      - db-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - poker-network
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - poker-network
+
+  node:
+    build:
+      context: ./docker/node
+      args:
+        USER_ID: ${USER_ID:-1000}
+        GROUP_ID: ${GROUP_ID:-1000}
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "5173:5173"
+    working_dir: /var/www/html
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    networks:
+      - poker-network
+
+  queue:
+    build:
+      context: ./docker/php
+      args:
+        USER_ID: ${USER_ID:-1000}
+        GROUP_ID: ${GROUP_ID:-1000}
+    volumes:
+      - .:/var/www/html
+    command: php artisan queue:work --sleep=3 --tries=3
+    depends_on:
+      - php
+      - redis
+    networks:
+      - poker-network
+
+networks:
+  poker-network:
+    driver: bridge
+
+volumes:
+  db-data:
