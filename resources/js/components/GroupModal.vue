@@ -1,17 +1,17 @@
 <template>
     <div class="modal-overlay" @click.self="$emit('close')">
         <div class="modal card">
-            <h2>{{ isEditing ? 'Edit Group' : 'Create Group' }}</h2>
+            <h2>{{ isEditing ? t('groups.editGroup') : t('groups.createGroup') }}</h2>
 
             <form @submit.prevent="save">
                 <div class="form-group">
-                    <label class="label" for="group-name">Group Name</label>
+                    <label class="label" for="group-name">{{ t('groups.name') }}</label>
                     <input
                         id="group-name"
                         v-model="form.name"
                         type="text"
                         class="input"
-                        placeholder="e.g., Late Position Opens"
+                        :placeholder="t('groups.namePlaceholder')"
                         required
                     />
                 </div>
@@ -19,17 +19,17 @@
                 <div class="form-group">
                     <label class="checkbox-label active-toggle">
                         <input type="checkbox" v-model="form.isActive" />
-                        <span>Active (included in Global Drill)</span>
+                        <span>{{ t('groups.activeLabel') }}</span>
                     </label>
                 </div>
 
                 <div class="form-group">
-                    <label class="label">Select Scenarios</label>
+                    <label class="label">{{ t('groups.selectScenarios') }}</label>
                     <input
                         v-model="searchQuery"
                         type="text"
                         class="input search-input"
-                        placeholder="Search scenarios..."
+                        :placeholder="t('groups.searchScenarios')"
                     />
                     <div class="scenario-list">
                         <label
@@ -54,20 +54,20 @@
                             </span>
                         </label>
                         <p v-if="scenarioStore.scenarios.length === 0" class="empty-message">
-                            No scenarios available. Create scenarios first.
+                            {{ t('groups.noScenariosAvailable') }}
                         </p>
                         <p v-else-if="filteredScenarios.length === 0" class="empty-message">
-                            No scenarios match your search.
+                            {{ t('groups.noScenariosMatch') }}
                         </p>
                     </div>
                 </div>
 
                 <div class="modal-actions">
                     <button type="button" @click="$emit('close')" class="btn btn-secondary">
-                        Cancel
+                        {{ t('common.cancel') }}
                     </button>
                     <button type="submit" class="btn btn-primary" :disabled="!form.name">
-                        {{ isEditing ? 'Save Changes' : 'Create Group' }}
+                        {{ isEditing ? t('groups.save') : t('groups.createGroup') }}
                     </button>
                 </div>
             </form>
@@ -79,6 +79,9 @@
 import { reactive, computed, ref, watch, onMounted } from 'vue';
 import { useScenarioStore } from '../stores/scenarios';
 import { useGroupStore } from '../stores/groups';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
     group: {

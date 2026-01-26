@@ -1,35 +1,35 @@
 <template>
     <div class="scenario-editor-page container">
         <div class="page-header">
-            <h1>{{ isEditing ? 'Edit Scenario' : 'Create Scenario' }}</h1>
+            <h1>{{ isEditing ? t('scenarioEditor.editTitle') : t('scenarioEditor.createTitle') }}</h1>
         </div>
 
         <div class="editor-layout">
             <div class="editor-sidebar card">
                 <div class="form-group">
-                    <label class="label" for="name">Name</label>
+                    <label class="label" for="name">{{ t('scenarios.name') }}</label>
                     <NameAutocomplete
                         id="name"
                         v-model="form.name"
                         :suggestions="scenarioStore.nameSuggestions"
-                        placeholder="e.g., Open Raise"
+                        :placeholder="t('scenarioEditor.namePlaceholder')"
                         @select="onNameSelect"
                     />
                 </div>
 
                 <div class="form-group">
-                    <label class="label">Positions</label>
+                    <label class="label">{{ t('scenarios.positions') }}</label>
                     <MultiSelect
                         v-model="form.positions"
                         :options="positions"
                         :groups="positionGroups"
                         :available-for-all="availablePositionsForName"
-                        placeholder="Select positions..."
+                        :placeholder="t('scenarioEditor.selectPositions')"
                     />
                 </div>
 
                 <div class="form-group">
-                    <label class="label" for="stackDepth">Stack Depth (bb)</label>
+                    <label class="label" for="stackDepth">{{ t('scenarios.stackDepth') }}</label>
                     <input
                         id="stackDepth"
                         v-model.number="form.stackDepth"
@@ -41,25 +41,25 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="label" for="description">Description</label>
+                    <label class="label" for="description">{{ t('scenarios.description') }}</label>
                     <textarea
                         id="description"
                         v-model="form.description"
                         class="input"
                         rows="2"
-                        placeholder="Optional description..."
+                        :placeholder="t('scenarioEditor.descriptionPlaceholder')"
                     ></textarea>
                 </div>
 
                 <div class="form-group slug-preview">
-                    <label class="label">Slug Preview</label>
+                    <label class="label">{{ t('scenarioEditor.slugPreview') }}</label>
                     <code class="slug-value">{{ slugPreview }}</code>
                 </div>
 
                 <hr class="divider" />
 
                 <div class="form-group">
-                    <label class="label">Brush Action</label>
+                    <label class="label">{{ t('scenarios.brushAction') }}</label>
                     <div class="action-buttons">
                         <button
                             v-for="action in actions"
@@ -70,11 +70,11 @@
                             {{ action.label }}
                         </button>
                     </div>
-                    <p class="hint">Hold <kbd>Ctrl</kbd> for Fold, <kbd>Alt</kbd> for Call</p>
+                    <p class="hint">{{ t('scenarioEditor.modifierHint') }}</p>
                 </div>
 
                 <div class="form-group">
-                    <label class="label">Quick Fill (Top X hands)</label>
+                    <label class="label">{{ t('scenarios.quickFill') }}</label>
                     <RangeSlider
                         v-model="sliderValue"
                         :action="brushAction"
@@ -84,9 +84,9 @@
 
                 <div class="form-actions">
                     <button @click="save" class="btn btn-primary" :disabled="saving || !canSave">
-                        {{ saving ? 'Saving...' : 'Save Scenario' }}
+                        {{ saving ? t('common.saving') : t('scenarios.save') }}
                     </button>
-                    <router-link to="/scenarios" class="btn btn-secondary">Cancel</router-link>
+                    <router-link to="/scenarios" class="btn btn-secondary">{{ t('common.cancel') }}</router-link>
                 </div>
             </div>
 
@@ -107,6 +107,7 @@
 import { ref, reactive, computed, onMounted, onUnmounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useScenarioStore } from '../stores/scenarios';
+import { useI18n } from '../composables/useI18n';
 import RangeGrid from '../components/range/RangeGrid.vue';
 import RangeSlider from '../components/range/RangeSlider.vue';
 import RangeLegend from '../components/range/RangeLegend.vue';
@@ -116,6 +117,7 @@ import { ACTIONS, createEmptyGrid, getHandsUpToStrength } from '../utils/hands';
 import { getCachedStackSize, setCachedStackSize } from '../utils/cache';
 import { generateSlugPreview } from '../utils/slug';
 
+const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const scenarioStore = useScenarioStore();
@@ -131,11 +133,11 @@ const positionGroups = {
     blinds: ['SB', 'BB'],
 };
 
-const actions = [
-    { value: ACTIONS.FOLD, label: 'Fold' },
-    { value: ACTIONS.CALL, label: 'Call' },
-    { value: ACTIONS.RAISE, label: 'Raise' },
-];
+const actions = computed(() => [
+    { value: ACTIONS.FOLD, label: t('actions.fold') },
+    { value: ACTIONS.CALL, label: t('actions.call') },
+    { value: ACTIONS.RAISE, label: t('actions.raise') },
+]);
 
 const form = reactive({
     name: '',

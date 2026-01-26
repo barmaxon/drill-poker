@@ -1,9 +1,9 @@
 <template>
     <div class="drill-setup-page container">
-        <h1>Start Drill</h1>
+        <h1>{{ t('drill.title') }}</h1>
 
         <div v-if="drillStore.suggestions.length > 0" class="suggestions-section">
-            <h3>Suggested Drills</h3>
+            <h3>{{ t('drill.suggestions') }}</h3>
             <div class="suggestion-cards">
                 <div
                     v-for="s in drillStore.suggestions"
@@ -20,7 +20,7 @@
                     <div v-if="s.accuracy !== undefined" class="accuracy">{{ s.accuracy }}%</div>
 
                     <div v-if="s.scenario.groups?.length" class="groups-section">
-                        <div class="groups-header">Groups</div>
+                        <div class="groups-header">{{ t('scenarios.groups') }}</div>
                         <div class="groups-list">
                             <button
                                 v-for="g in s.scenario.groups"
@@ -38,7 +38,7 @@
                             class="btn btn-sm btn-primary"
                             @click="selectScenario(s.scenario.id)"
                         >
-                            Drill This
+                            {{ t('drill.drillThis') }}
                         </button>
                     </div>
                 </div>
@@ -47,67 +47,67 @@
 
         <div class="setup-form card">
             <div class="form-group">
-                <label class="label">Select Scenario or Group</label>
+                <label class="label">{{ t('drill.selectLabel') }}</label>
                 <div class="selection-tabs">
                     <button
                         :class="['tab', { active: selectionType === 'scenario' }]"
                         @click="selectionType = 'scenario'"
                     >
-                        Single Scenario
+                        {{ t('drill.singleScenario') }}
                     </button>
                     <button
                         :class="['tab', { active: selectionType === 'group' }]"
                         @click="selectionType = 'group'"
                     >
-                        Scenario Group
+                        {{ t('drill.scenarioGroup') }}
                     </button>
                     <button
                         :class="['tab', { active: selectionType === 'global' }]"
                         @click="selectionType = 'global'"
                     >
-                        Global Drill
+                        {{ t('drill.global') }}
                     </button>
                 </div>
 
                 <select v-if="selectionType === 'scenario'" v-model="selectedScenario" class="input">
-                    <option value="">Select a scenario...</option>
+                    <option value="">{{ t('drill.selectScenario') }}</option>
                     <option v-for="s in scenarios" :key="s.id" :value="s.id">
                         {{ s.name }} ({{ formatPositions(s.positions) }}, {{ s.stack_depth }}bb)
                     </option>
                 </select>
 
                 <select v-else-if="selectionType === 'group'" v-model="selectedGroup" class="input">
-                    <option value="">Select a group...</option>
+                    <option value="">{{ t('drill.selectGroup') }}</option>
                     <option v-for="g in groups" :key="g.id" :value="g.id">
-                        {{ g.name }} ({{ g.scenarios?.length || 0 }} scenarios)
-                        {{ g.is_active === false ? '[Inactive]' : '' }}
+                        {{ g.name }} ({{ g.scenarios?.length || 0 }} {{ t('groups.scenarios') }})
+                        {{ g.is_active === false ? t('groups.inactive') : '' }}
                     </option>
                 </select>
 
                 <div v-else-if="selectionType === 'global'" class="global-info">
                     <p class="global-description">
-                        Drills from all active groups, prioritizing scenarios with lowest accuracy.
+                        {{ t('drill.globalDescription') }}
                     </p>
                     <div class="global-stats">
                         <span class="stat-item">
-                            <strong>{{ activeGroupCount }}</strong> active groups
+                            <strong>{{ activeGroupCount }}</strong> {{ t('drill.activeGroups') }}
                         </span>
                         <span class="stat-item">
-                            <strong>{{ activeScenarioCount }}</strong> scenarios
+                            <strong>{{ activeScenarioCount }}</strong> {{ t('scenarios.title').toLowerCase() }}
                         </span>
                     </div>
                     <p v-if="activeGroupCount === 0" class="warning-text">
-                        No active groups found. Mark groups as active in the Groups page to use Global Drill.
+                        {{ t('drill.noActiveGroups') }}
                     </p>
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="label">Timer Settings</label>
+                <label class="label">{{ t('drill.timerSettings') }}</label>
                 <div class="timer-options">
                     <label class="checkbox-label">
                         <input type="checkbox" v-model="useTimer" />
-                        <span>Enable countdown timer</span>
+                        <span>{{ t('drill.enableTimer') }}</span>
                     </label>
                     <div v-if="useTimer" class="timer-input">
                         <input
@@ -117,18 +117,18 @@
                             min="1"
                             max="60"
                         />
-                        <span>seconds per hand</span>
+                        <span>{{ t('drill.secondsPerHand') }}</span>
                     </div>
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="label">Hand Limit (optional)</label>
+                <label class="label">{{ t('drill.handLimit') }}</label>
                 <input
                     type="number"
                     v-model.number="handLimit"
                     class="input"
-                    placeholder="Leave empty for unlimited"
+                    :placeholder="t('drill.handLimitPlaceholder')"
                     min="1"
                 />
             </div>
@@ -142,16 +142,16 @@
                 class="btn btn-primary btn-lg"
                 :disabled="!canStart"
             >
-                Start Drilling
+                {{ t('drill.start') }}
             </button>
         </div>
 
         <div class="alternative-drills card">
-            <h3>Other Drill Modes</h3>
+            <h3>{{ t('drill.otherModes') }}</h3>
             <router-link to="/drill/range-construction" class="drill-mode-link">
                 <div class="drill-mode-info">
-                    <strong>Range Construction</strong>
-                    <span>Draw the entire range from memory</span>
+                    <strong>{{ t('drill.rangeConstruction') }}</strong>
+                    <span>{{ t('drill.rangeConstructionDesc') }}</span>
                 </div>
                 <span class="arrow">&rarr;</span>
             </router-link>
@@ -166,7 +166,9 @@ import { useScenarioStore } from '../stores/scenarios';
 import { useGroupStore } from '../stores/groups';
 import { useDrillStore } from '../stores/drill';
 import { getCachedDrillSelection, setCachedDrillSelection, getCachedDrillSettings, setCachedDrillSettings } from '../utils/cache';
+import { useI18n } from '../composables/useI18n';
 
+const { t } = useI18n();
 const router = useRouter();
 const scenarioStore = useScenarioStore();
 const groupStore = useGroupStore();
@@ -189,9 +191,9 @@ const formatPositions = (positions) => {
 
 const getBadgeText = (type) => {
     switch (type) {
-        case 'declining': return 'Declining';
-        case 'low': return 'Low Stats';
-        case 'new': return 'New';
+        case 'declining': return t('drill.declining');
+        case 'low': return t('drill.lowStats');
+        case 'new': return t('drill.new');
         default: return type;
     }
 };

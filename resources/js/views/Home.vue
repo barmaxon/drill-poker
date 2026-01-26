@@ -1,36 +1,41 @@
 <template>
     <div class="home container">
         <div class="hero">
-            <h1>Master Your Preflop Game</h1>
+            <h1>{{ t('home.heroTitle') }}</h1>
             <p class="hero-subtitle">
-                Train MTT preflop decisions with smart mistake tracking and weighted randomization
-                that focuses on your problem areas.
+                {{ t('home.heroSubtitle') }}
             </p>
             <div class="hero-actions">
-                <router-link to="/drill" class="btn btn-primary btn-lg">Start Drilling</router-link>
-                <router-link to="/scenarios" class="btn btn-secondary btn-lg">Manage Scenarios</router-link>
+                <router-link to="/drill" class="btn btn-primary btn-lg">{{ t('home.startDrilling') }}</router-link>
+                <router-link to="/scenarios" class="btn btn-secondary btn-lg">{{ t('home.manageScenarios') }}</router-link>
             </div>
         </div>
 
         <div class="features">
             <div class="feature card">
                 <div class="feature-icon">🎯</div>
-                <h3>Smart Randomization</h3>
-                <p>Hands you struggle with appear more often. Border hands get extra focus.</p>
+                <h3>{{ t('home.featureRandomization') }}</h3>
+                <p>{{ t('home.featureRandomizationDesc') }}</p>
             </div>
             <div class="feature card">
                 <div class="feature-icon">📊</div>
-                <h3>Detailed Stats</h3>
-                <p>Track your progress with heatmaps and mistake breakdowns.</p>
+                <h3>{{ t('home.featureStats') }}</h3>
+                <p>{{ t('home.featureStatsDesc') }}</p>
             </div>
             <div class="feature card">
                 <div class="feature-icon">⚡</div>
-                <h3>Quick Drills</h3>
-                <p>Keyboard shortcuts (F/C/R) for fast, efficient practice sessions.</p>
+                <h3>{{ t('home.featureDrills') }}</h3>
+                <p>{{ t('home.featureDrillsDesc') }}</p>
             </div>
         </div>
     </div>
 </template>
+
+<script setup>
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
+</script>
 
 <style scoped>
 .home {

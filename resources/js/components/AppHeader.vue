@@ -3,24 +3,25 @@
         <div class="container header-content">
             <router-link to="/" class="logo">
                 <span class="logo-icon">♠</span>
-                <span class="logo-text">Poker Study</span>
+                <span class="logo-text">{{ t('app.name') }}</span>
             </router-link>
 
             <nav class="nav-links">
-                <router-link to="/drill" class="nav-link">Drill</router-link>
-                <router-link to="/scenarios" class="nav-link">Scenarios</router-link>
-                <router-link to="/groups" class="nav-link">Groups</router-link>
-                <router-link to="/stats" class="nav-link">Stats</router-link>
+                <router-link to="/drill" class="nav-link">{{ t('nav.drill') }}</router-link>
+                <router-link to="/scenarios" class="nav-link">{{ t('nav.scenarios') }}</router-link>
+                <router-link to="/groups" class="nav-link">{{ t('nav.groups') }}</router-link>
+                <router-link to="/stats" class="nav-link">{{ t('nav.stats') }}</router-link>
             </nav>
 
             <div class="header-actions">
+                <LanguageSwitcher />
                 <template v-if="authStore.isAuthenticated">
                     <span class="user-name">{{ authStore.user?.name }}</span>
-                    <button @click="logout" class="btn btn-secondary">Logout</button>
+                    <button @click="logout" class="btn btn-secondary">{{ t('nav.logout') }}</button>
                 </template>
                 <template v-else>
-                    <router-link to="/login" class="btn btn-secondary">Login</router-link>
-                    <router-link to="/register" class="btn btn-primary">Register</router-link>
+                    <router-link to="/login" class="btn btn-secondary">{{ t('nav.login') }}</router-link>
+                    <router-link to="/register" class="btn btn-primary">{{ t('nav.register') }}</router-link>
                 </template>
             </div>
         </div>
@@ -30,6 +31,10 @@
 <script setup>
 import { useAuthStore } from '../stores/auth';
 import { useRouter } from 'vue-router';
+import { useI18n } from '../composables/useI18n';
+import LanguageSwitcher from './LanguageSwitcher.vue';
+
+const { t } = useI18n();
 
 const authStore = useAuthStore();
 const router = useRouter();

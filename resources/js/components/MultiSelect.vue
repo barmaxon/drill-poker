@@ -28,7 +28,7 @@
                 :class="{ active: isAllSelected }"
                 @click="toggleAll"
             >
-                All
+                {{ t('common.all') }}
             </button>
             <button
                 v-for="(positions, groupName) in groups"
@@ -63,6 +63,9 @@
 
 <script setup>
 import { computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
     modelValue: {

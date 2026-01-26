@@ -5,23 +5,27 @@
                 {{ isCorrect ? '✓' : '✗' }}
             </div>
             <div class="feedback-text">
-                <h3>{{ isCorrect ? 'Correct!' : 'Incorrect' }}</h3>
+                <h3>{{ isCorrect ? t('drillFeedback.correct') : t('drillFeedback.incorrect') }}</h3>
                 <p v-if="!isCorrect" class="feedback-detail">
-                    You chose <span class="action user">{{ userAction }}</span>,
-                    correct was <span class="action correct-action">{{ correctAction }}</span>
+                    {{ t('drillFeedback.youChose') }} <span class="action user">{{ userAction }}</span>,
+                    {{ t('drillFeedback.correctWas') }} <span class="action correct-action">{{ correctAction }}</span>
                 </p>
                 <span v-if="mistakeType === 'border'" class="border-badge">
-                    Border hand
+                    {{ t('drillFeedback.borderHand') }}
                 </span>
             </div>
             <button @click="$emit('continue')" class="btn btn-primary btn-lg continue-btn">
-                Continue <span class="shortcut">(Space)</span>
+                {{ t('drillFeedback.continue') }} <span class="shortcut">({{ t('drillFeedback.shortcut') }})</span>
             </button>
         </div>
     </div>
 </template>
 
 <script setup>
+import { useI18n } from '../../composables/useI18n';
+
+const { t } = useI18n();
+
 defineProps({
     isCorrect: {
         type: Boolean,

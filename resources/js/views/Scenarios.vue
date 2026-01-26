@@ -1,8 +1,8 @@
 <template>
     <div class="scenarios-page container">
         <div class="page-header">
-            <h1>Scenarios</h1>
-            <router-link to="/scenarios/create" class="btn btn-primary">Create Scenario</router-link>
+            <h1>{{ t('scenarios.title') }}</h1>
+            <router-link to="/scenarios/create" class="btn btn-primary">{{ t('scenarios.create') }}</router-link>
         </div>
 
         <div class="search-bar">
@@ -10,7 +10,7 @@
                 v-model="searchQuery"
                 type="text"
                 class="input"
-                placeholder="Search scenarios by name, description, or position..."
+                :placeholder="t('scenarios.search')"
             />
         </div>
 
@@ -32,26 +32,26 @@
                             {{ pos }}
                         </span>
                         <span class="badge">{{ scenario.stack_depth || scenario.stackDepth }}bb</span>
-                        <span class="badge hands-count">{{ countHands(scenario.grid) }} hands</span>
+                        <span class="badge hands-count">{{ countHands(scenario.grid) }} {{ t('stats.hands') }}</span>
                     </div>
                     <div v-if="scenario.slug" class="scenario-slug">
                         <code>{{ scenario.slug }}</code>
                     </div>
                 </div>
                 <div class="scenario-actions">
-                    <router-link :to="`/scenarios/${scenario.id}/edit`" class="btn btn-secondary">Edit</router-link>
-                    <button @click="openCopyModal(scenario)" class="btn btn-secondary">Copy</button>
-                    <button @click="deleteScenario(scenario.id)" class="btn btn-secondary">Delete</button>
+                    <router-link :to="`/scenarios/${scenario.id}/edit`" class="btn btn-secondary">{{ t('common.edit') }}</router-link>
+                    <button @click="openCopyModal(scenario)" class="btn btn-secondary">{{ t('scenarios.copy') }}</button>
+                    <button @click="deleteScenario(scenario.id)" class="btn btn-secondary">{{ t('common.delete') }}</button>
                 </div>
             </div>
 
             <div v-if="scenarioStore.scenarios.length === 0" class="empty-state card">
-                <p>No scenarios yet. Create your first scenario to start drilling.</p>
-                <router-link to="/scenarios/create" class="btn btn-primary">Create Scenario</router-link>
+                <p>{{ t('scenarios.noScenarios') }}</p>
+                <router-link to="/scenarios/create" class="btn btn-primary">{{ t('scenarios.create') }}</router-link>
             </div>
 
             <div v-else-if="filteredScenarios.length === 0" class="empty-state card">
-                <p>No scenarios match your search.</p>
+                <p>{{ t('scenarios.noMatch') }}</p>
             </div>
         </div>
 
@@ -69,7 +69,9 @@ import { ref, computed, watch, onMounted } from 'vue';
 import { useScenarioStore } from '../stores/scenarios';
 import { ACTIONS } from '../utils/hands';
 import CopyScenarioModal from '../components/CopyScenarioModal.vue';
+import { useI18n } from '../composables/useI18n';
 
+const { t } = useI18n();
 const scenarioStore = useScenarioStore();
 
 // Copy modal state
@@ -127,7 +129,7 @@ const countHands = (grid) => {
 };
 
 const deleteScenario = async (id) => {
-    if (confirm('Are you sure you want to delete this scenario?')) {
+    if (confirm(t('scenarios.deleteConfirm'))) {
         await scenarioStore.deleteScenario(id);
     }
 };

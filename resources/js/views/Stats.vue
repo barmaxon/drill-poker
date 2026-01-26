@@ -1,6 +1,6 @@
 <template>
     <div class="stats-page container">
-        <h1>Statistics</h1>
+        <h1>{{ t('stats.title') }}</h1>
 
         <!-- View Tabs -->
         <div class="view-tabs">
@@ -8,19 +8,19 @@
                 :class="['tab', { active: activeView === 'overall' }]"
                 @click="activeView = 'overall'"
             >
-                Overall
+                {{ t('stats.overall') }}
             </button>
             <button
                 :class="['tab', { active: activeView === 'groups' }]"
                 @click="activeView = 'groups'"
             >
-                By Group
+                {{ t('stats.byGroup') }}
             </button>
             <button
                 :class="['tab', { active: activeView === 'scenarios' }]"
                 @click="activeView = 'scenarios'"
             >
-                By Scenario
+                {{ t('stats.byScenario') }}
             </button>
         </div>
 
@@ -28,31 +28,31 @@
         <div v-if="activeView === 'overall'" class="view-content">
             <div class="stats-grid">
                 <div class="stat-card card">
-                    <h3>Total Hands</h3>
+                    <h3>{{ t('stats.totalHands') }}</h3>
                     <div class="stat-value">{{ overallStats.totalHands }}</div>
                 </div>
                 <div class="stat-card card">
-                    <h3>Accuracy</h3>
+                    <h3>{{ t('stats.accuracy') }}</h3>
                     <div class="stat-value">{{ overallStats.accuracy }}%</div>
                 </div>
                 <div class="stat-card card">
-                    <h3>Mistakes</h3>
-                    <div class="stat-value">{{ overallStats.totalMistakes }} <span class="stat-detail">({{ overallStats.borderMistakes }} border)</span></div>
+                    <h3>{{ t('stats.mistakes') }}</h3>
+                    <div class="stat-value">{{ overallStats.totalMistakes }} <span class="stat-detail">({{ overallStats.borderMistakes }} {{ t('stats.border') }})</span></div>
                 </div>
                 <div class="stat-card card">
-                    <h3>Sessions</h3>
+                    <h3>{{ t('stats.sessions') }}</h3>
                     <div class="stat-value">{{ overallStats.sessions }}</div>
                 </div>
             </div>
 
             <div class="stats-sections">
                 <section class="card">
-                    <h2>Overall Performance Heatmap</h2>
+                    <h2>{{ t('stats.overallHeatmap') }}</h2>
                     <HandHeatmap :data="overallHeatmap" />
                 </section>
 
                 <section class="card">
-                    <h2>Problem Hands</h2>
+                    <h2>{{ t('stats.problemHands') }}</h2>
                     <div class="problem-hands-list">
                         <div
                             v-for="hand in problemHands"
@@ -61,10 +61,10 @@
                         >
                             <span class="hand-name">{{ hand.hand }}</span>
                             <span class="hand-accuracy">{{ hand.accuracy }}%</span>
-                            <span class="hand-mistakes">{{ hand.mistakes }} mistakes</span>
+                            <span class="hand-mistakes">{{ hand.mistakes }} {{ t('stats.mistakes').toLowerCase() }}</span>
                         </div>
                         <p v-if="problemHands.length === 0" class="text-secondary">
-                            No problem hands yet. Start drilling to see your weak spots.
+                            {{ t('stats.noProblemHands') }}
                         </p>
                     </div>
                 </section>
@@ -81,22 +81,22 @@
                 >
                     <div class="group-header">
                         <h3>{{ group.name }}</h3>
-                        <span class="scenario-count">{{ group.scenarioCount }} scenarios</span>
+                        <span class="scenario-count">{{ group.scenarioCount }} {{ t('groups.scenarios') }}</span>
                     </div>
                     <div class="group-stats">
                         <div class="mini-stat">
-                            <span class="mini-label">Hands</span>
+                            <span class="mini-label">{{ t('stats.hands') }}</span>
                             <span class="mini-value">{{ group.totalHands }}</span>
                         </div>
                         <div class="mini-stat">
-                            <span class="mini-label">Accuracy</span>
+                            <span class="mini-label">{{ t('stats.accuracy') }}</span>
                             <span class="mini-value" :class="getAccuracyClass(group.accuracy)">
                                 {{ group.accuracy }}%
                             </span>
                         </div>
                         <div class="mini-stat">
-                            <span class="mini-label">Mistakes</span>
-                            <span class="mini-value">{{ group.totalMistakes }} <span class="stat-detail">({{ group.borderMistakes }} border)</span></span>
+                            <span class="mini-label">{{ t('stats.mistakes') }}</span>
+                            <span class="mini-value">{{ group.totalMistakes }} <span class="stat-detail">({{ group.borderMistakes }} {{ t('stats.border') }})</span></span>
                         </div>
                     </div>
                     <div class="group-scenarios">
@@ -118,7 +118,7 @@
                 </div>
 
                 <div v-if="groupStats.length === 0" class="empty-state card">
-                    <p>No group stats yet. Create groups and start drilling.</p>
+                    <p>{{ t('stats.noGroupStats') }}</p>
                 </div>
             </div>
         </div>
@@ -126,9 +126,9 @@
         <!-- Scenarios View -->
         <div v-if="activeView === 'scenarios'" class="view-content">
             <div class="scenario-selector">
-                <label class="label">Select Scenario</label>
+                <label class="label">{{ t('stats.selectScenario') }}</label>
                 <select v-model="selectedScenarioId" class="input">
-                    <option value="">All Scenarios</option>
+                    <option value="">{{ t('stats.allScenarios') }}</option>
                     <option v-for="s in scenarios" :key="s.id" :value="s.id">
                         {{ s.name }} ({{ formatPositions(s.positions) }}, {{ s.stack_depth }}bb)
                     </option>
@@ -138,29 +138,29 @@
             <div v-if="selectedScenarioId" class="scenario-detail">
                 <div class="stats-grid">
                     <div class="stat-card card">
-                        <h3>Hands Drilled</h3>
+                        <h3>{{ t('stats.handsDrilled') }}</h3>
                         <div class="stat-value">{{ selectedScenarioStats.totalHands }}</div>
                     </div>
                     <div class="stat-card card">
-                        <h3>Accuracy</h3>
+                        <h3>{{ t('stats.accuracy') }}</h3>
                         <div class="stat-value" :class="getAccuracyClass(selectedScenarioStats.accuracy)">
                             {{ selectedScenarioStats.accuracy }}%
                         </div>
                     </div>
                     <div class="stat-card card">
-                        <h3>Mistakes</h3>
-                        <div class="stat-value">{{ selectedScenarioStats.totalMistakes }} <span class="stat-detail">({{ selectedScenarioStats.borderMistakes }} border)</span></div>
+                        <h3>{{ t('stats.mistakes') }}</h3>
+                        <div class="stat-value">{{ selectedScenarioStats.totalMistakes }} <span class="stat-detail">({{ selectedScenarioStats.borderMistakes }} {{ t('stats.border') }})</span></div>
                     </div>
                 </div>
 
                 <div class="stats-sections">
                     <section class="card">
-                        <h2>{{ selectedScenario?.name }} - Heatmap</h2>
+                        <h2>{{ selectedScenario?.name }} - {{ t('stats.heatmap') }}</h2>
                         <HandHeatmap :data="selectedScenarioHeatmap" />
                     </section>
 
                     <section class="card">
-                        <h2>Problem Hands</h2>
+                        <h2>{{ t('stats.problemHands') }}</h2>
                         <div class="problem-hands-list">
                             <div
                                 v-for="hand in selectedScenarioProblemHands"
@@ -169,10 +169,10 @@
                             >
                                 <span class="hand-name">{{ hand.hand }}</span>
                                 <span class="hand-accuracy">{{ hand.accuracy }}%</span>
-                                <span class="hand-mistakes">{{ hand.mistakes }} mistakes</span>
+                                <span class="hand-mistakes">{{ hand.mistakes }} {{ t('stats.mistakes').toLowerCase() }}</span>
                             </div>
                             <p v-if="selectedScenarioProblemHands.length === 0" class="text-secondary">
-                                No problem hands for this scenario yet.
+                                {{ t('stats.noProblemHandsScenario') }}
                             </p>
                         </div>
                     </section>
@@ -197,13 +197,13 @@
                         <div class="scenario-stats">
                             <div class="mini-stat">
                                 <span class="mini-value">{{ scenario.totalHands }}</span>
-                                <span class="mini-label">hands</span>
+                                <span class="mini-label">{{ t('stats.hands') }}</span>
                             </div>
                             <div class="mini-stat">
                                 <span class="mini-value" :class="getAccuracyClass(scenario.accuracy)">
                                     {{ scenario.accuracy }}%
                                 </span>
-                                <span class="mini-label">accuracy</span>
+                                <span class="mini-label">{{ t('stats.accuracy').toLowerCase() }}</span>
                             </div>
                         </div>
                     </div>
@@ -219,7 +219,9 @@ import { useStatsStore } from '../stores/stats';
 import { useScenarioStore } from '../stores/scenarios';
 import { useGroupStore } from '../stores/groups';
 import HandHeatmap from '../components/stats/HandHeatmap.vue';
+import { useI18n } from '../composables/useI18n';
 
+const { t } = useI18n();
 const statsStore = useStatsStore();
 const scenarioStore = useScenarioStore();
 const groupStore = useGroupStore();

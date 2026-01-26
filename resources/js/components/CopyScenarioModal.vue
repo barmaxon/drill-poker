@@ -1,11 +1,11 @@
 <template>
     <div class="modal-overlay" @click.self="$emit('close')">
         <div class="modal card">
-            <h2>Copy Scenario</h2>
+            <h2>{{ t('scenarios.copyScenario') }}</h2>
 
             <form @submit.prevent="save">
                 <div class="form-group">
-                    <label class="label" for="copy-name">Name</label>
+                    <label class="label" for="copy-name">{{ t('scenarios.name') }}</label>
                     <input
                         id="copy-name"
                         v-model="form.name"
@@ -16,7 +16,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="label">Positions</label>
+                    <label class="label">{{ t('scenarios.positions') }}</label>
                     <MultiSelect
                         v-model="form.positions"
                         :options="positions"
@@ -27,7 +27,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="label" for="copy-stackDepth">Stack Depth (bb)</label>
+                    <label class="label" for="copy-stackDepth">{{ t('scenarios.stackDepth') }}</label>
                     <input
                         id="copy-stackDepth"
                         v-model.number="form.stackDepth"
@@ -39,7 +39,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="label" for="copy-description">Description</label>
+                    <label class="label" for="copy-description">{{ t('scenarios.description') }}</label>
                     <textarea
                         id="copy-description"
                         v-model="form.description"
@@ -50,20 +50,20 @@
                 </div>
 
                 <div class="grid-preview">
-                    <label class="label">Range Grid</label>
-                    <p class="hint">The range grid will be copied from the original scenario.</p>
+                    <label class="label">{{ t('scenarios.rangeGrid') }}</label>
+                    <p class="hint">{{ t('scenarios.rangeGridCopied') }}</p>
                 </div>
 
                 <div v-if="!hasChanges" class="warning-message">
-                    Change at least one field to create a copy.
+                    {{ t('scenarios.changeField') }}
                 </div>
 
                 <div class="modal-actions">
                     <button type="button" @click="$emit('close')" class="btn btn-secondary">
-                        Cancel
+                        {{ t('common.cancel') }}
                     </button>
                     <button type="submit" class="btn btn-primary" :disabled="!canSave || saving">
-                        {{ saving ? 'Creating...' : 'Create Copy' }}
+                        {{ saving ? t('scenarios.creating') : t('scenarios.createCopy') }}
                     </button>
                 </div>
             </form>
@@ -75,7 +75,9 @@
 import { reactive, computed, ref, onMounted } from 'vue';
 import { useScenarioStore } from '../stores/scenarios';
 import MultiSelect from './MultiSelect.vue';
+import { useI18n } from '../composables/useI18n';
 
+const { t } = useI18n();
 
 const props = defineProps({
     scenario: {

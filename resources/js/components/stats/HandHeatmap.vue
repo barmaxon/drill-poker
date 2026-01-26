@@ -17,7 +17,7 @@
             </div>
         </div>
         <div class="heatmap-legend">
-            <span class="legend-label">Accuracy:</span>
+            <span class="legend-label">{{ t('stats.accuracy') }}:</span>
             <div class="legend-gradient"></div>
             <div class="legend-labels">
                 <span>0%</span>
@@ -30,6 +30,9 @@
 
 <script setup>
 import { RANKS, getHandAtPosition } from '../../utils/hands';
+import { useI18n } from '../../composables/useI18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
     data: {

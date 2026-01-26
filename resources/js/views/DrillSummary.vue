@@ -1,39 +1,39 @@
 <template>
     <div class="drill-summary-page container">
-        <h1>Drill Complete</h1>
+        <h1>{{ t('drillSummary.title') }}</h1>
 
         <div class="summary-grid">
             <div class="summary-card card">
-                <h3>Total Hands</h3>
+                <h3>{{ t('drillSummary.totalHands') }}</h3>
                 <div class="value">{{ summary.totalHands }}</div>
             </div>
             <div class="summary-card card">
-                <h3>Correct</h3>
+                <h3>{{ t('drillSummary.correct') }}</h3>
                 <div class="value correct">{{ summary.correctCount }}</div>
             </div>
             <div class="summary-card card">
-                <h3>Accuracy</h3>
+                <h3>{{ t('drillSummary.accuracy') }}</h3>
                 <div class="value">{{ summary.accuracy }}%</div>
             </div>
             <div class="summary-card card">
-                <h3>Border Mistakes</h3>
+                <h3>{{ t('drillSummary.borderMistakes') }}</h3>
                 <div class="value error">{{ summary.borderMistakes }}</div>
             </div>
         </div>
 
         <div v-if="summary.comparison" class="comparison-section card">
-            <h2>Progress</h2>
+            <h2>{{ t('drillSummary.progress') }}</h2>
             <div class="comparison-grid">
                 <div class="comparison-item">
-                    <span class="comparison-label">Before</span>
+                    <span class="comparison-label">{{ t('drillSummary.before') }}</span>
                     <span class="comparison-value">{{ summary.comparison.overallBefore }}%</span>
                 </div>
                 <div class="comparison-item">
-                    <span class="comparison-label">After</span>
+                    <span class="comparison-label">{{ t('drillSummary.after') }}</span>
                     <span class="comparison-value">{{ summary.comparison.overallAfter }}%</span>
                 </div>
                 <div class="comparison-item change">
-                    <span class="comparison-label">Change</span>
+                    <span class="comparison-label">{{ t('drillSummary.change') }}</span>
                     <span
                         class="comparison-value"
                         :class="changeClass"
@@ -45,7 +45,7 @@
         </div>
 
         <div class="mistakes-section card" v-if="summary.mistakes?.length > 0">
-            <h2>Mistakes</h2>
+            <h2>{{ t('drillSummary.mistakes') }}</h2>
             <div class="mistakes-list">
                 <div
                     v-for="(mistake, index) in summary.mistakes"
@@ -59,15 +59,15 @@
                             {{ formatPositions(mistake.positions) }} · {{ mistake.stackDepth }}bb
                         </span>
                     </div>
-                    <span class="your-action">You: {{ mistake.userAction }}</span>
-                    <span class="correct-action">Correct: {{ mistake.correctAction }}</span>
-                    <span v-if="mistake.isBorder" class="border-badge">Border</span>
+                    <span class="your-action">{{ t('drillSummary.yourAnswer') }} {{ mistake.userAction }}</span>
+                    <span class="correct-action">{{ t('drillSummary.correctAnswer') }} {{ mistake.correctAction }}</span>
+                    <span v-if="mistake.isBorder" class="border-badge">{{ t('drillSummary.border') }}</span>
                 </div>
             </div>
         </div>
 
         <div v-if="drilledScenarios.length > 0" class="view-ranges-section">
-            <h3>View Ranges</h3>
+            <h3>{{ t('drill.viewRanges') }}</h3>
             <div class="range-links">
                 <a
                     v-for="scenario in drilledScenarios"
@@ -84,9 +84,9 @@
         </div>
 
         <div class="summary-actions">
-            <router-link to="/drill" class="btn btn-primary btn-lg">Drill Again</router-link>
-            <router-link to="/stats" class="btn btn-secondary btn-lg">View Stats</router-link>
-            <router-link to="/" class="btn btn-secondary btn-lg">Home</router-link>
+            <router-link to="/drill" class="btn btn-primary btn-lg">{{ t('drillSummary.drillAgain') }}</router-link>
+            <router-link to="/stats" class="btn btn-secondary btn-lg">{{ t('drillSummary.viewStats') }}</router-link>
+            <router-link to="/" class="btn btn-secondary btn-lg">{{ t('drillSummary.home') }}</router-link>
         </div>
     </div>
 </template>
@@ -94,7 +94,9 @@
 <script setup>
 import { computed } from 'vue';
 import { useDrillStore } from '../stores/drill';
+import { useI18n } from '../composables/useI18n';
 
+const { t } = useI18n();
 const drillStore = useDrillStore();
 
 const summary = computed(() => drillStore.sessionSummary || {

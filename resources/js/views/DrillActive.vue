@@ -2,14 +2,14 @@
     <div class="drill-active-page">
         <div class="drill-header">
             <div class="drill-progress">
-                <span>Hand {{ drillStore.currentHandNumber }}</span>
+                <span>{{ t('drill.hand') }} {{ drillStore.currentHandNumber }}</span>
                 <span v-if="drillStore.handLimit"> / {{ drillStore.handLimit }}</span>
             </div>
             <div class="drill-stats">
-                <span class="stat correct">{{ drillStore.correctCount }} correct</span>
-                <span class="stat incorrect">{{ drillStore.incorrectCount }} wrong</span>
+                <span class="stat correct">{{ drillStore.correctCount }} {{ t('drill.correct') }}</span>
+                <span class="stat incorrect">{{ drillStore.incorrectCount }} {{ t('drill.wrong') }}</span>
             </div>
-            <button @click="endDrill" class="btn btn-secondary">End Drill</button>
+            <button @click="endDrill" class="btn btn-secondary">{{ t('drill.end') }}</button>
         </div>
 
         <div class="drill-main">
@@ -43,21 +43,21 @@
                     class="btn btn-fold btn-lg action-btn"
                     :disabled="showFeedback"
                 >
-                    Fold <span class="shortcut">(F)</span>
+                    {{ t('actions.fold') }} <span class="shortcut">({{ t('drill.shortcutFold') }})</span>
                 </button>
                 <button
                     @click="submitAnswer('call')"
                     class="btn btn-call btn-lg action-btn"
                     :disabled="showFeedback"
                 >
-                    Call <span class="shortcut">(C)</span>
+                    {{ t('actions.call') }} <span class="shortcut">({{ t('drill.shortcutCall') }})</span>
                 </button>
                 <button
                     @click="submitAnswer('raise')"
                     class="btn btn-raise btn-lg action-btn"
                     :disabled="showFeedback"
                 >
-                    Raise <span class="shortcut">(R)</span>
+                    {{ t('actions.raise') }} <span class="shortcut">({{ t('drill.shortcutRaise') }})</span>
                 </button>
             </div>
         </div>
@@ -80,7 +80,9 @@ import { useDrillStore } from '../stores/drill';
 import HandDisplay from '../components/drill/HandDisplay.vue';
 import DrillTimer from '../components/drill/DrillTimer.vue';
 import DrillFeedback from '../components/drill/DrillFeedback.vue';
+import { useI18n } from '../composables/useI18n';
 
+const { t } = useI18n();
 const router = useRouter();
 const drillStore = useDrillStore();
 

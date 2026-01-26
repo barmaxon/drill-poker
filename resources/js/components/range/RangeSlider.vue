@@ -1,8 +1,8 @@
 <template>
     <div class="range-slider">
         <div class="slider-header">
-            <span>Top {{ displayPercentage }}% of hands</span>
-            <span class="hand-count">{{ modelValue }} / 169 hands</span>
+            <span>{{ t('rangeSlider.topPercent', { percent: displayPercentage }) }}</span>
+            <span class="hand-count">{{ t('rangeSlider.handCount', { count: modelValue }) }}</span>
         </div>
         <input
             type="range"
@@ -15,14 +15,14 @@
         />
         <div class="slider-actions">
             <button @click="applyStrength" class="btn btn-primary">
-                Fill Range
+                {{ t('rangeSlider.fillRange') }}
             </button>
             <button @click="clearRange" class="btn btn-secondary">
-                Clear
+                {{ t('rangeSlider.clear') }}
             </button>
         </div>
         <div class="slider-preview" v-if="modelValue > 0">
-            <span class="preview-label">Hands included:</span>
+            <span class="preview-label">{{ t('rangeSlider.handsIncluded') }}</span>
             <span class="preview-hands">{{ previewHands }}</span>
         </div>
     </div>
@@ -31,6 +31,9 @@
 <script setup>
 import { computed } from 'vue';
 import { HAND_STRENGTH_ORDER } from '../../utils/hands';
+import { useI18n } from '../../composables/useI18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
     modelValue: {
@@ -54,7 +57,7 @@ const previewHands = computed(() => {
     const hands = HAND_STRENGTH_ORDER.slice(0, Math.min(props.modelValue, 10));
     let result = hands.join(', ');
     if (props.modelValue > 10) {
-        result += `, ... (${props.modelValue - 10} more)`;
+        result += `, ... ${t('rangeSlider.more', { count: props.modelValue - 10 })}`;
     }
     return result;
 });

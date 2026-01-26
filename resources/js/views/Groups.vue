@@ -1,8 +1,8 @@
 <template>
     <div class="groups-page container">
         <div class="page-header">
-            <h1>Scenario Groups</h1>
-            <button @click="openCreateModal" class="btn btn-primary">Create Group</button>
+            <h1>{{ t('groups.title') }}</h1>
+            <button @click="openCreateModal" class="btn btn-primary">{{ t('groups.create') }}</button>
         </div>
 
         <div class="groups-list">
@@ -13,16 +13,16 @@
             >
                 <div class="group-info">
                     <h3>{{ group.name }}</h3>
-                    <p class="text-secondary">{{ group.scenarios?.length || 0 }} scenarios</p>
+                    <p class="text-secondary">{{ group.scenarios?.length || 0 }} {{ t('groups.scenarios') }}</p>
                 </div>
                 <div class="group-actions">
-                    <button @click="openEditModal(group)" class="btn btn-secondary">Edit</button>
-                    <button @click="deleteGroup(group.id)" class="btn btn-secondary">Delete</button>
+                    <button @click="openEditModal(group)" class="btn btn-secondary">{{ t('common.edit') }}</button>
+                    <button @click="deleteGroup(group.id)" class="btn btn-secondary">{{ t('common.delete') }}</button>
                 </div>
             </div>
 
             <div v-if="groupStore.groups.length === 0" class="empty-state card">
-                <p>No groups yet. Create groups to organize your scenarios for drilling.</p>
+                <p>{{ t('groups.noGroups') }}</p>
             </div>
         </div>
 
@@ -39,7 +39,9 @@
 import { ref, onMounted } from 'vue';
 import { useGroupStore } from '../stores/groups';
 import GroupModal from '../components/GroupModal.vue';
+import { useI18n } from '../composables/useI18n';
 
+const { t } = useI18n();
 const groupStore = useGroupStore();
 
 const showModal = ref(false);
@@ -65,7 +67,7 @@ const onSaved = () => {
 };
 
 const deleteGroup = async (id) => {
-    if (confirm('Are you sure you want to delete this group?')) {
+    if (confirm(t('groups.deleteConfirm'))) {
         await groupStore.deleteGroup(id);
     }
 };

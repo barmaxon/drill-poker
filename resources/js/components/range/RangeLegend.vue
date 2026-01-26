@@ -2,28 +2,34 @@
     <div class="range-legend">
         <div class="legend-item">
             <div class="legend-color fold"></div>
-            <span>Fold</span>
+            <span>{{ t('legend.fold') }}</span>
         </div>
         <div class="legend-item">
             <div class="legend-color call"></div>
-            <span>Call</span>
+            <span>{{ t('legend.call') }}</span>
         </div>
         <div class="legend-item">
             <div class="legend-color raise"></div>
-            <span>Raise</span>
+            <span>{{ t('legend.raise') }}</span>
         </div>
         <div class="legend-divider"></div>
         <div class="legend-note">
-            <span>Diagonal: Pocket pairs</span>
+            <span>{{ t('legend.pocketPairs') }}</span>
         </div>
         <div class="legend-note">
-            <span>Above: Suited hands</span>
+            <span>{{ t('legend.suitedHands') }}</span>
         </div>
         <div class="legend-note">
-            <span>Below: Offsuit hands</span>
+            <span>{{ t('legend.offsuitHands') }}</span>
         </div>
     </div>
 </template>
+
+<script setup>
+import { useI18n } from '../../composables/useI18n';
+
+const { t } = useI18n();
+</script>
 
 <style scoped>
 .range-legend {

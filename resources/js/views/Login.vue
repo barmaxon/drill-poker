@@ -1,10 +1,10 @@
 <template>
     <div class="auth-page">
         <div class="auth-card card">
-            <h2>Login</h2>
+            <h2>{{ t('auth.login') }}</h2>
             <form @submit.prevent="handleLogin" class="auth-form">
                 <div class="form-group">
-                    <label class="label" for="email">Email</label>
+                    <label class="label" for="email">{{ t('auth.email') }}</label>
                     <input
                         id="email"
                         v-model="form.email"
@@ -15,7 +15,7 @@
                     />
                 </div>
                 <div class="form-group">
-                    <label class="label" for="password">Password</label>
+                    <label class="label" for="password">{{ t('auth.password') }}</label>
                     <input
                         id="password"
                         v-model="form.password"
@@ -27,12 +27,12 @@
                 </div>
                 <div v-if="error" class="error-message">{{ error }}</div>
                 <button type="submit" class="btn btn-primary btn-lg btn-full" :disabled="loading">
-                    {{ loading ? 'Logging in...' : 'Login' }}
+                    {{ loading ? t('common.loading') : t('auth.loginButton') }}
                 </button>
             </form>
             <p class="auth-footer">
-                Don't have an account?
-                <router-link to="/register">Register</router-link>
+                {{ t('auth.noAccount') }}
+                <router-link to="/register">{{ t('auth.register') }}</router-link>
             </p>
         </div>
     </div>
@@ -42,9 +42,11 @@
 import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
+import { useI18n } from '../composables/useI18n';
 
 const router = useRouter();
 const authStore = useAuthStore();
+const { t } = useI18n();
 
 const form = reactive({
     email: '',

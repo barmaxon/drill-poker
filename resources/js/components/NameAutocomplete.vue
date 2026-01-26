@@ -27,7 +27,7 @@
             >
                 <span class="suggestion-name">{{ suggestion.name }}</span>
                 <span class="suggestion-meta">
-                    {{ suggestion.availablePositions.length }} positions available
+                    {{ t('common.positionsAvailable', { count: suggestion.availablePositions.length }) }}
                 </span>
             </div>
         </div>
@@ -36,6 +36,9 @@
 
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 const props = defineProps({
     modelValue: {

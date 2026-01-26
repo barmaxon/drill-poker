@@ -1,21 +1,20 @@
 <template>
     <div class="auth-page">
         <div class="auth-card card">
-            <h2>Register</h2>
+            <h2>{{ t('auth.register') }}</h2>
             <form @submit.prevent="handleRegister" class="auth-form">
                 <div class="form-group">
-                    <label class="label" for="name">Name</label>
+                    <label class="label" for="name">{{ t('auth.name') }}</label>
                     <input
                         id="name"
                         v-model="form.name"
                         type="text"
                         class="input"
-                        placeholder="Your name"
                         required
                     />
                 </div>
                 <div class="form-group">
-                    <label class="label" for="email">Email</label>
+                    <label class="label" for="email">{{ t('auth.email') }}</label>
                     <input
                         id="email"
                         v-model="form.email"
@@ -26,7 +25,7 @@
                     />
                 </div>
                 <div class="form-group">
-                    <label class="label" for="password">Password</label>
+                    <label class="label" for="password">{{ t('auth.password') }}</label>
                     <input
                         id="password"
                         v-model="form.password"
@@ -38,7 +37,7 @@
                     />
                 </div>
                 <div class="form-group">
-                    <label class="label" for="password_confirmation">Confirm Password</label>
+                    <label class="label" for="password_confirmation">{{ t('auth.confirmPassword') }}</label>
                     <input
                         id="password_confirmation"
                         v-model="form.password_confirmation"
@@ -50,12 +49,12 @@
                 </div>
                 <div v-if="error" class="error-message">{{ error }}</div>
                 <button type="submit" class="btn btn-primary btn-lg btn-full" :disabled="loading">
-                    {{ loading ? 'Creating account...' : 'Register' }}
+                    {{ loading ? t('common.loading') : t('auth.registerButton') }}
                 </button>
             </form>
             <p class="auth-footer">
-                Already have an account?
-                <router-link to="/login">Login</router-link>
+                {{ t('auth.hasAccount') }}
+                <router-link to="/login">{{ t('auth.login') }}</router-link>
             </p>
         </div>
     </div>
@@ -65,9 +64,11 @@
 import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
+import { useI18n } from '../composables/useI18n';
 
 const router = useRouter();
 const authStore = useAuthStore();
+const { t } = useI18n();
 
 const form = reactive({
     name: '',

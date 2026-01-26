@@ -1,8 +1,8 @@
 <template>
     <div class="ranges-page container">
         <div class="page-header">
-            <h1>Ranges</h1>
-            <router-link to="/ranges/create" class="btn btn-primary">Create Range</router-link>
+            <h1>{{ t('ranges.title') }}</h1>
+            <router-link to="/ranges/create" class="btn btn-primary">{{ t('ranges.create') }}</router-link>
         </div>
 
         <div class="ranges-grid">
@@ -12,16 +12,16 @@
                 class="range-card card"
             >
                 <h3>{{ range.name }}</h3>
-                <p class="text-secondary">{{ range.description || 'No description' }}</p>
+                <p class="text-secondary">{{ range.description || t('common.noDescription') }}</p>
                 <div class="range-actions">
                     <router-link :to="`/ranges/${range.id}/edit`" class="btn btn-secondary">
-                        Edit
+                        {{ t('common.edit') }}
                     </router-link>
                 </div>
             </div>
 
             <div v-if="rangeStore.ranges.length === 0" class="empty-state">
-                <p>No ranges yet. Create your first range to get started.</p>
+                <p>{{ t('ranges.noRanges') }}</p>
             </div>
         </div>
     </div>
@@ -30,7 +30,9 @@
 <script setup>
 import { onMounted } from 'vue';
 import { useRangeStore } from '../stores/ranges';
+import { useI18n } from '../composables/useI18n';
 
+const { t } = useI18n();
 const rangeStore = useRangeStore();
 
 onMounted(() => {

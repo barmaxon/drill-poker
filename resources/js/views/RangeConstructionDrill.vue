@@ -2,14 +2,14 @@
     <div class="range-construction-page container">
         <!-- Phase: Setup -->
         <div v-if="phase === 'setup'" class="setup-phase">
-            <h1>Range Construction Drill</h1>
-            <p class="description">Draw the entire range from memory, then compare to the correct grid.</p>
+            <h1>{{ t('rangeConstruction.title') }}</h1>
+            <p class="description">{{ t('rangeConstruction.description') }}</p>
 
             <div class="setup-form card">
                 <div class="form-group">
-                    <label class="label">Select Scenario</label>
+                    <label class="label">{{ t('rangeConstruction.selectScenario') }}</label>
                     <select v-model="selectedScenarioId" class="input">
-                        <option value="">Select a scenario...</option>
+                        <option value="">{{ t('drill.selectScenario') }}</option>
                         <option v-for="s in scenarios" :key="s.id" :value="s.id">
                             {{ s.name }} ({{ formatPositions(s.positions) }}, {{ s.stack_depth }}bb)
                         </option>
@@ -25,24 +25,24 @@
                     class="btn btn-primary btn-lg"
                     :disabled="!selectedScenarioId || store.loading"
                 >
-                    {{ store.loading ? 'Loading...' : 'Start Drawing' }}
+                    {{ store.loading ? t('rangeConstruction.loading') : t('rangeConstruction.startDrawing') }}
                 </button>
             </div>
 
             <div v-if="store.stats" class="stats-section card">
-                <h2>Your Stats</h2>
+                <h2>{{ t('rangeConstruction.yourStats') }}</h2>
                 <div class="stats-grid">
                     <div class="stat-item">
                         <div class="stat-value">{{ store.stats.overall.totalAttempts }}</div>
-                        <div class="stat-label">Total Attempts</div>
+                        <div class="stat-label">{{ t('rangeConstruction.totalAttempts') }}</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-value">{{ store.stats.overall.avgAccuracy }}%</div>
-                        <div class="stat-label">Avg Accuracy</div>
+                        <div class="stat-label">{{ t('rangeConstruction.avgAccuracy') }}</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-value">{{ store.stats.overall.scenariosAttempted }}</div>
-                        <div class="stat-label">Scenarios</div>
+                        <div class="stat-label">{{ t('rangeConstruction.scenariosAttempted') }}</div>
                     </div>
                 </div>
             </div>
@@ -70,10 +70,10 @@
                     {{ action.label }} ({{ action.key }})
                 </button>
             </div>
-            <p class="hint">Hold <kbd>Ctrl</kbd> for Fold, <kbd>Alt</kbd> for Call</p>
+            <p class="hint">{{ t('rangeConstruction.hint') }}</p>
 
             <div class="slider-section">
-                <label class="label">Quick Fill (Top X hands)</label>
+                <label class="label">{{ t('scenarios.quickFill') }}</label>
                 <RangeSlider
                     v-model="sliderValue"
                     :action="brushAction"
@@ -93,40 +93,40 @@
             <RangeLegend />
 
             <div class="action-buttons">
-                <button @click="clearGrid" class="btn btn-secondary">Clear All</button>
+                <button @click="clearGrid" class="btn btn-secondary">{{ t('rangeConstruction.clear') }}</button>
                 <button @click="submitRange" class="btn btn-primary btn-lg" :disabled="store.loading">
-                    {{ store.loading ? 'Submitting...' : 'Submit Range' }}
+                    {{ store.loading ? t('rangeConstruction.submitting') : t('rangeConstruction.submit') }}
                 </button>
             </div>
         </div>
 
         <!-- Phase: Results -->
         <div v-else-if="phase === 'results'" class="results-phase">
-            <h1>Results</h1>
+            <h1>{{ t('rangeConstruction.results') }}</h1>
 
             <div class="accuracy-display">
                 <div class="accuracy-value" :class="accuracyClass">
                     {{ store.result.accuracy }}%
                 </div>
-                <div class="accuracy-label">Accuracy</div>
+                <div class="accuracy-label">{{ t('stats.accuracy') }}</div>
                 <div class="accuracy-details">
-                    {{ store.result.correctCount }} / {{ store.result.totalCells }} cells correct
+                    {{ store.result.correctCount }} / {{ store.result.totalCells }} {{ t('stats.hands').toLowerCase() }}
                 </div>
             </div>
 
             <div class="grid-comparison">
                 <div class="grid-section">
-                    <h3>Your Range</h3>
+                    <h3>{{ t('rangeConstruction.yourRange') }}</h3>
                     <RangeGrid :grid="userGrid" :brush-action="''" readonly />
                 </div>
                 <div class="grid-section">
-                    <h3>Correct Range</h3>
+                    <h3>{{ t('rangeConstruction.correctRange') }}</h3>
                     <RangeGrid :grid="store.result.correctGrid" :brush-action="''" readonly />
                 </div>
             </div>
 
             <div v-if="store.result.differences.length > 0" class="mistakes-section card">
-                <h2>Mistakes ({{ store.result.differences.length }})</h2>
+                <h2>{{ t('rangeConstruction.mistakes') }} ({{ store.result.differences.length }})</h2>
                 <div class="mistakes-list">
                     <div
                         v-for="diff in limitedDifferences"
@@ -134,37 +134,37 @@
                         class="mistake-item"
                     >
                         <span class="hand">{{ diff.hand }}</span>
-                        <span class="your-action">You: {{ diff.userAction }}</span>
-                        <span class="correct-action">Correct: {{ diff.correctAction }}</span>
+                        <span class="your-action">{{ t('drillSummary.yourAnswer') }} {{ diff.userAction }}</span>
+                        <span class="correct-action">{{ t('drillSummary.correctAnswer') }} {{ diff.correctAction }}</span>
                     </div>
                     <p v-if="store.result.differences.length > 20" class="more-mistakes">
-                        ... and {{ store.result.differences.length - 20 }} more mistakes
+                        ... {{ t('rangeConstruction.moreMistakes', { count: store.result.differences.length - 20 }) }}
                     </p>
                 </div>
             </div>
 
             <div class="result-stats card">
-                <h3>Your Progress</h3>
+                <h3>{{ t('rangeConstruction.yourProgress') }}</h3>
                 <div class="stats-grid">
                     <div class="stat-item">
                         <div class="stat-value">{{ store.result.stats.totalAttempts }}</div>
-                        <div class="stat-label">Total Attempts</div>
+                        <div class="stat-label">{{ t('rangeConstruction.totalAttempts') }}</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-value">{{ store.result.stats.bestAccuracy }}%</div>
-                        <div class="stat-label">Best Accuracy</div>
+                        <div class="stat-label">{{ t('rangeConstruction.bestAccuracy') }}</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-value">{{ store.result.stats.avgAccuracy }}%</div>
-                        <div class="stat-label">Avg Accuracy</div>
+                        <div class="stat-label">{{ t('rangeConstruction.avgAccuracy') }}</div>
                     </div>
                 </div>
             </div>
 
             <div class="action-buttons">
-                <button @click="tryAgain" class="btn btn-primary btn-lg">Try Again</button>
-                <button @click="goToSetup" class="btn btn-secondary btn-lg">Different Scenario</button>
-                <router-link to="/drill" class="btn btn-secondary btn-lg">Back to Drills</router-link>
+                <button @click="tryAgain" class="btn btn-primary btn-lg">{{ t('rangeConstruction.tryAgain') }}</button>
+                <button @click="goToSetup" class="btn btn-secondary btn-lg">{{ t('rangeConstruction.differentScenario') }}</button>
+                <router-link to="/drill" class="btn btn-secondary btn-lg">{{ t('rangeConstruction.backToDrills') }}</router-link>
             </div>
         </div>
     </div>
@@ -178,7 +178,9 @@ import RangeGrid from '../components/range/RangeGrid.vue';
 import RangeLegend from '../components/range/RangeLegend.vue';
 import RangeSlider from '../components/range/RangeSlider.vue';
 import { ACTIONS, createEmptyGrid, getHandsUpToStrength } from '../utils/hands';
+import { useI18n } from '../composables/useI18n';
 
+const { t } = useI18n();
 const store = useRangeConstructionStore();
 const scenarioStore = useScenarioStore();
 
@@ -194,11 +196,11 @@ let timerInterval = null;
 
 const scenarios = computed(() => scenarioStore.scenarios);
 
-const actions = [
-    { value: ACTIONS.FOLD, label: 'Fold', key: 'F' },
-    { value: ACTIONS.CALL, label: 'Call', key: 'C' },
-    { value: ACTIONS.RAISE, label: 'Raise', key: 'R' },
-];
+const actions = computed(() => [
+    { value: ACTIONS.FOLD, label: t('actions.fold'), key: 'F' },
+    { value: ACTIONS.CALL, label: t('actions.call'), key: 'C' },
+    { value: ACTIONS.RAISE, label: t('actions.raise'), key: 'R' },
+]);
 
 const limitedDifferences = computed(() => {
     if (!store.result?.differences) return [];

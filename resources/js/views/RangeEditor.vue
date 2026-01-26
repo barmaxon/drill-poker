@@ -1,35 +1,35 @@
 <template>
     <div class="range-editor-page container">
         <div class="page-header">
-            <h1>{{ isEditing ? 'Edit Range' : 'Create Range' }}</h1>
+            <h1>{{ isEditing ? t('ranges.edit') : t('ranges.create') }}</h1>
         </div>
 
         <div class="editor-layout">
             <div class="editor-sidebar card">
                 <div class="form-group">
-                    <label class="label" for="name">Name</label>
+                    <label class="label" for="name">{{ t('scenarios.name') }}</label>
                     <input
                         id="name"
                         v-model="form.name"
                         type="text"
                         class="input"
-                        placeholder="e.g., BTN Open"
+                        :placeholder="t('ranges.namePlaceholder')"
                     />
                 </div>
 
                 <div class="form-group">
-                    <label class="label" for="description">Description</label>
+                    <label class="label" for="description">{{ t('scenarios.description') }}</label>
                     <textarea
                         id="description"
                         v-model="form.description"
                         class="input"
                         rows="3"
-                        placeholder="Optional description..."
+                        :placeholder="t('ranges.descriptionPlaceholder')"
                     ></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label class="label">Default Action</label>
+                    <label class="label">{{ t('ranges.defaultAction') }}</label>
                     <div class="action-buttons">
                         <button
                             v-for="action in actions"
@@ -43,7 +43,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="label">Brush Action</label>
+                    <label class="label">{{ t('scenarios.brushAction') }}</label>
                     <div class="action-buttons">
                         <button
                             v-for="action in actions"
@@ -57,7 +57,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="label">Strength Slider</label>
+                    <label class="label">{{ t('ranges.strengthSlider') }}</label>
                     <RangeSlider
                         v-model="sliderValue"
                         :action="brushAction"
@@ -67,9 +67,9 @@
 
                 <div class="form-actions">
                     <button @click="save" class="btn btn-primary" :disabled="saving">
-                        {{ saving ? 'Saving...' : 'Save Range' }}
+                        {{ saving ? t('common.saving') : t('ranges.saveRange') }}
                     </button>
-                    <router-link to="/ranges" class="btn btn-secondary">Cancel</router-link>
+                    <router-link to="/ranges" class="btn btn-secondary">{{ t('common.cancel') }}</router-link>
                 </div>
             </div>
 
@@ -90,22 +90,24 @@
 import { ref, reactive, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useRangeStore } from '../stores/ranges';
+import { useI18n } from '../composables/useI18n';
 import RangeGrid from '../components/range/RangeGrid.vue';
 import RangeSlider from '../components/range/RangeSlider.vue';
 import RangeLegend from '../components/range/RangeLegend.vue';
 import { ACTIONS, createEmptyGrid, getHandsUpToStrength, getPositionForHand } from '../utils/hands';
 
+const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const rangeStore = useRangeStore();
 
 const isEditing = computed(() => !!route.params.id);
 
-const actions = [
-    { value: ACTIONS.FOLD, label: 'Fold' },
-    { value: ACTIONS.CALL, label: 'Call' },
-    { value: ACTIONS.RAISE, label: 'Raise' },
-];
+const actions = computed(() => [
+    { value: ACTIONS.FOLD, label: t('actions.fold') },
+    { value: ACTIONS.CALL, label: t('actions.call') },
+    { value: ACTIONS.RAISE, label: t('actions.raise') },
+]);
 
 const form = reactive({
     name: '',
