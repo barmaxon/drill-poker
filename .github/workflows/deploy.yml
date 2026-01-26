@@ -19,11 +19,10 @@ jobs:
           script: |
             cd /var/www/poker/drill
             git pull origin main
-            docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build nginx
             docker compose exec -T php composer install --no-dev --optimize-autoloader
             docker compose exec -T php php artisan migrate --force
             docker compose exec -T php php artisan config:cache
             docker compose exec -T php php artisan route:cache
             docker compose exec -T php php artisan view:cache
-            docker compose --profile build run --rm node npm install
-            docker compose --profile build run --rm node npm run build
+            docker compose run --rm node npm install
+            docker compose run --rm node npm run build
