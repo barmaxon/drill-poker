@@ -41,21 +41,21 @@
                 <button
                     @click="submitAnswer('fold')"
                     class="btn btn-fold btn-lg action-btn"
-                    :disabled="showFeedback"
+                    :disabled="showFeedback || isSubmitting"
                 >
                     {{ t('actions.fold') }} <span class="shortcut">({{ t('drill.shortcutFold') }})</span>
                 </button>
                 <button
                     @click="submitAnswer('call')"
                     class="btn btn-call btn-lg action-btn"
-                    :disabled="showFeedback"
+                    :disabled="showFeedback || isSubmitting"
                 >
                     {{ t('actions.call') }} <span class="shortcut">({{ t('drill.shortcutCall') }})</span>
                 </button>
                 <button
                     @click="submitAnswer('raise')"
                     class="btn btn-raise btn-lg action-btn"
-                    :disabled="showFeedback"
+                    :disabled="showFeedback || isSubmitting"
                 >
                     {{ t('actions.raise') }} <span class="shortcut">({{ t('drill.shortcutRaise') }})</span>
                 </button>
@@ -88,16 +88,22 @@ const drillStore = useDrillStore();
 
 const showFeedback = ref(false);
 const lastResult = ref(null);
+const isSubmitting = ref(false);
 
 const currentHand = computed(() => drillStore.currentHand);
 const currentScenario = computed(() => drillStore.currentScenario);
 
 const submitAnswer = async (action) => {
-    if (showFeedback.value) return;
+    if (showFeedback.value || isSubmitting.value) return;
+    isSubmitting.value = true;
 
-    const result = await drillStore.submitAnswer(action);
-    lastResult.value = result;
-    showFeedback.value = true;
+    try {
+        const result = await drillStore.submitAnswer(action);
+        lastResult.value = result;
+        showFeedback.value = true;
+    } finally {
+        isSubmitting.value = false;
+    }
 };
 
 const handleTimeout = () => {

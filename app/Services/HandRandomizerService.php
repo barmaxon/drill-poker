@@ -140,7 +140,20 @@ class HandRandomizerService
     {
         $allHands = config('poker.hand_strength_order');
         $weights = config('poker.weights');
-        $distanceMultipliers = config('poker.distance_multipliers');
+        $baseMultipliers = config('poker.distance_multipliers');
+
+        // Get user's accuracy for this scenario
+        $scenarioStat = UserScenarioStat::where('user_id', $userId)
+            ->where('scenario_id', $scenarioId)
+            ->first();
+
+        $accuracy = 0;
+        if ($scenarioStat && $scenarioStat->total_attempts > 0) {
+            $accuracy = ($scenarioStat->correct_attempts / $scenarioStat->total_attempts) * 100;
+        }
+
+        // Adjust distance multipliers based on accuracy
+        $distanceMultipliers = $this->getAdjustedMultipliers($baseMultipliers, $accuracy);
 
         // Get border distances from database (pre-computed)
         $borderDistances = ScenarioBorderHand::where('scenario_id', $scenarioId)
@@ -188,6 +201,36 @@ class HandRandomizerService
         }
 
         return $allHands[0];
+    }
+
+    /**
+     * Adjust distance multipliers based on scenario accuracy.
+     * Higher accuracy = more focus on border hands, less on easy hands.
+     */
+    private function getAdjustedMultipliers(array $baseMultipliers, float $accuracy): array
+    {
+        // Base increase of 50% for border hands
+        $multipliers = [
+            0 => $baseMultipliers[0] * 1.5,      // 3.0 -> 4.5
+            1 => $baseMultipliers[1] * 1.5,      // 2.0 -> 3.0
+            2 => $baseMultipliers[2] * 1.5,      // 1.5 -> 2.25
+            3 => $baseMultipliers[3] * 1.5,      // 1.2 -> 1.8
+            'default' => $baseMultipliers['default'],  // 1.0 stays
+        ];
+
+        // If accuracy > 90%, make deep-in-range hands unlikely
+        if ($accuracy > 90) {
+            $multipliers[0] = $baseMultipliers[0] * 2.5;  // 3.0 -> 7.5
+            $multipliers[1] = $baseMultipliers[1] * 2.0;  // 2.0 -> 4.0
+            $multipliers[2] = $baseMultipliers[2] * 1.5;  // 1.5 -> 2.25
+            $multipliers[3] = $baseMultipliers[3] * 1.2;  // 1.2 -> 1.44
+            $multipliers['default'] = 0.35;               // 1.0 -> 0.35 (~10% of hands)
+        } elseif ($accuracy > 80) {
+            // Moderate adjustment for 80-90% accuracy
+            $multipliers['default'] = 0.5;
+        }
+
+        return $multipliers;
     }
 
     private function getRandomCardsForHand(string $hand): array
