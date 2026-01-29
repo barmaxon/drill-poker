@@ -107,9 +107,9 @@ class StatsController extends Controller
             ];
         }
 
-        // Problem hands
+        // Problem hands (must have at least 1 mistake)
         $problemHands = $handStats
-            ->filter(fn($stat) => $stat->total_attempts >= 3)
+            ->filter(fn($stat) => $stat->total_attempts >= 3 && $stat->correct_attempts < $stat->total_attempts)
             ->map(function ($stat) {
                 $accuracy = $stat->total_attempts > 0
                     ? round(($stat->correct_attempts / $stat->total_attempts) * 100)
@@ -205,6 +205,7 @@ class StatsController extends Controller
 
         $hands = UserHandStat::where('user_id', $user->id)
             ->where('total_attempts', '>=', 5)
+            ->whereColumn('correct_attempts', '<', 'total_attempts')  // Must have at least 1 mistake
             ->get()
             ->map(function ($stat) {
                 $accuracy = $stat->total_attempts > 0

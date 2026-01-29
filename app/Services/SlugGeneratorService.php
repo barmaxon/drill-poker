@@ -10,9 +10,9 @@ class SlugGeneratorService
      * Position group definitions.
      */
     private const POSITION_GROUPS = [
-        'early' => ['UTG', 'UTG+1', 'UTG+2'],
-        'middle' => ['LJ', 'HJ'],
-        'late' => ['CO', 'BTN'],
+        'early' => ['UTG', 'UTG+1'],
+        'middle' => ['UTG+2', 'LJ'],
+        'late' => ['HJ', 'CO', 'BTN'],
         'blinds' => ['SB', 'BB'],
     ];
 

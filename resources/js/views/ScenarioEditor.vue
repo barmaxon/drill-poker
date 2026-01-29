@@ -127,9 +127,9 @@ const isEditing = computed(() => !!route.params.id);
 const positions = ['UTG', 'UTG+1', 'UTG+2', 'LJ', 'HJ', 'CO', 'BTN', 'SB', 'BB'];
 
 const positionGroups = {
-    early: ['UTG', 'UTG+1', 'UTG+2'],
-    middle: ['LJ', 'HJ'],
-    late: ['CO', 'BTN'],
+    early: ['UTG', 'UTG+1'],
+    middle: ['UTG+2', 'LJ'],
+    late: ['HJ', 'CO', 'BTN'],
     blinds: ['SB', 'BB'],
 };
 
