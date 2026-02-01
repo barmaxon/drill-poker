@@ -96,11 +96,13 @@ const getCellTooltip = (row, col) => {
 
 .heatmap-header {
     display: flex;
+    gap: 1.75px;
 }
 
 .corner-cell {
     width: 28px;
     height: 28px;
+    flex-shrink: 0;
 }
 
 .header-cell {
@@ -112,10 +114,12 @@ const getCellTooltip = (row, col) => {
     font-weight: 600;
     font-size: 0.7rem;
     color: var(--color-text-secondary);
+    flex-shrink: 0;
 }
 
 .heatmap-row {
     display: flex;
+    gap: 2px;
 }
 
 .row-header {
@@ -127,6 +131,7 @@ const getCellTooltip = (row, col) => {
     font-weight: 600;
     font-size: 0.7rem;
     color: var(--color-text-secondary);
+    flex-shrink: 0;
 }
 
 .heatmap-cell {
@@ -135,10 +140,10 @@ const getCellTooltip = (row, col) => {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 1px;
     border-radius: var(--radius-sm);
     cursor: default;
     transition: transform var(--transition-fast);
+    flex-shrink: 0;
 }
 
 .heatmap-cell:hover {
