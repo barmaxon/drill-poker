@@ -163,7 +163,8 @@ class ScenarioController extends Controller
 
     private function authorizeScenario(Scenario $scenario): void
     {
-        if ($scenario->created_by !== request()->user()->id) {
+        $user = request()->user();
+        if ($scenario->created_by !== $user->id && !$user->can_edit_all) {
             abort(403, 'Unauthorized');
         }
     }

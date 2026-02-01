@@ -16,6 +16,8 @@ class ScenarioGroupController extends Controller
 
     public function store(Request $request)
     {
+        $this->authorizeEdit($request);
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'isActive' => ['sometimes', 'boolean'],
@@ -36,6 +38,8 @@ class ScenarioGroupController extends Controller
 
     public function update(Request $request, ScenarioGroup $group)
     {
+        $this->authorizeEdit($request);
+
         $validated = $request->validate([
             'name' => ['sometimes', 'string', 'max:255'],
             'isActive' => ['sometimes', 'boolean'],
@@ -53,14 +57,18 @@ class ScenarioGroupController extends Controller
         return response()->json($group->load('scenarios'));
     }
 
-    public function destroy(ScenarioGroup $group)
+    public function destroy(Request $request, ScenarioGroup $group)
     {
+        $this->authorizeEdit($request);
+
         $group->delete();
         return response()->json(null, 204);
     }
 
     public function syncScenarios(Request $request, ScenarioGroup $group)
     {
+        $this->authorizeEdit($request);
+
         $validated = $request->validate([
             'scenarioIds' => ['required', 'array'],
             'scenarioIds.*' => ['exists:scenarios,id'],
@@ -68,5 +76,12 @@ class ScenarioGroupController extends Controller
 
         $group->scenarios()->sync($validated['scenarioIds']);
         return response()->json($group->load('scenarios'));
+    }
+
+    private function authorizeEdit(Request $request): void
+    {
+        if (!$request->user()->can_edit_all) {
+            abort(403, 'Unauthorized');
+        }
     }
 }
