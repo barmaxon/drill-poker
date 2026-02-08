@@ -41,7 +41,6 @@ const emit = defineEmits(['update:cell', 'update:cells']);
 const ranks = RANKS;
 
 const isDragging = ref(false);
-const dragStartCell = ref(null);
 const selectedCells = ref(new Set());
 
 const isSelected = (row, col) => {
@@ -50,25 +49,14 @@ const isSelected = (row, col) => {
 
 const startDragging = (row, col) => {
     isDragging.value = true;
-    dragStartCell.value = { row, col };
     selectedCells.value = new Set([`${row}-${col}`]);
 };
 
 const handleMouseEnter = (row, col) => {
-    if (!isDragging.value || !dragStartCell.value) return;
+    if (!isDragging.value) return;
 
-    // Select all cells in the rectangle from start to current
-    const minRow = Math.min(dragStartCell.value.row, row);
-    const maxRow = Math.max(dragStartCell.value.row, row);
-    const minCol = Math.min(dragStartCell.value.col, col);
-    const maxCol = Math.max(dragStartCell.value.col, col);
-
-    selectedCells.value = new Set();
-    for (let r = minRow; r <= maxRow; r++) {
-        for (let c = minCol; c <= maxCol; c++) {
-            selectedCells.value.add(`${r}-${c}`);
-        }
-    }
+    // Brush mode: add each cell the mouse passes through
+    selectedCells.value.add(`${row}-${col}`);
 };
 
 const stopDragging = () => {
@@ -83,7 +71,6 @@ const stopDragging = () => {
     }
 
     isDragging.value = false;
-    dragStartCell.value = null;
     selectedCells.value = new Set();
 };
 
